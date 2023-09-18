@@ -1,0 +1,64 @@
+TRAIN:
+  # Use a pretrained model for inference, skip training.
+  ENABLE: False
+  DATASET: kinetics
+  BATCH_SIZE: 8
+  EVAL_PERIOD: 5
+  CHECKPOINT_PERIOD: 5
+  AUTO_RESUME: True
+DATA:
+  # Path to the different data directory of SSIM enabled.
+  PATH_TO_DATA_DIR: 'datasets/kinetics400/benchmark/'
+  # When using a different data directory, use a path prefix to find the video.
+  PATH_PREFIX: '/home/qichunyu/TimeSformer/TimeSformer/kinetics400/'
+  CACHE: True
+  PATH_CACHE_DIR: "datasets/kinetics400/"
+  NUM_FRAMES: 8
+  SAMPLING_RATE: 32
+  TRAIN_JITTER_SCALES: [256, 320]
+  TRAIN_CROP_SIZE: 224
+  TEST_CROP_SIZE: 224
+  INPUT_CHANNEL_NUM: [3]
+  SSIM_ADAPTIVE_SAMPLING:
+    ENABLED: False
+    SSIM_THRESHOLD: 0.45
+    FALLBACK: False
+    FALLBACK_EPSILON: 0.1
+TIMESFORMER:
+  # Disable temporal axis
+  ATTENTION_TYPE: 'space_only'
+  # Add pretrained model, official model
+  PRETRAINED_MODEL: 'pretrained/TimeSformer_divST_8x32_224_K400.pyth'
+SOLVER:
+  BASE_LR: 0.005
+  LR_POLICY: steps_with_relative_lrs
+  STEPS: [0, 11, 14]
+  LRS: [1, 0.1, 0.01]
+  MAX_EPOCH: 15
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 1e-4
+  OPTIMIZING_METHOD: sgd
+MODEL:
+  MODEL_NAME: vit_base_patch16_224
+  NUM_CLASSES: 400
+  ARCH: vit
+  LOSS_FUNC: cross_entropy
+  DROPOUT_RATE: 0.5
+TEST:
+  ENABLE: True
+  DATASET: kinetics
+  BATCH_SIZE: 8
+  NUM_ENSEMBLE_VIEWS: 1
+  NUM_SPATIAL_CROPS: 3
+DATA_LOADER:
+  NUM_WORKERS: 8
+  PIN_MEMORY: True
+TENSORBOARD:
+  ENABLE: True
+  LOG_DIR: "k400_baseline_iii"
+# We only have one GPU.
+NUM_GPUS: 1
+NUM_SHARDS: 1
+RNG_SEED: 0
+LOG_MODEL_INFO: True
+OUTPUT_DIR: "logs/tb_benchmarks/mid_term/"
